@@ -1,0 +1,22 @@
+[package]
+name = "ping-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.89"
+clap = { version = "4.5.20", features = ["derive"] }
+socket2 = "0.5.7"
+tokio = { version = "1", features = ["full", "tracing"] }
+
+[[bin]]
+name = "benchmark"
+path = "src/benchmark.rs"
+
+[[bin]]
+name = "tokio-server"
+path = "src/tokio-server.rs"
+
+[[bin]]
+name = "std-server"
+path = "src/std-server.rs"
