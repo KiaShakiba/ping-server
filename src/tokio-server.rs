@@ -6,43 +6,43 @@
  */
 
 use tokio::{
-	net::{TcpListener, TcpStream},
-	io::{AsyncReadExt, AsyncWriteExt},
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::{TcpListener, TcpStream},
 };
 
 use socket2::SockRef;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-	let listener = TcpListener::bind("localhost:3000").await?;
+    let listener = TcpListener::bind("localhost:3000").await?;
 
-	println!("Tokio server listening on port 3000...");
+    println!("Tokio server listening on port 3000...");
 
-	loop {
-		let (stream, _) = listener.accept().await?;
-		println!("Handling new connection...");
+    loop {
+        let (stream, _) = listener.accept().await?;
+        println!("Handling new connection...");
 
-		tokio::spawn(async move {
-			let _ = handle_stream(stream).await;
-		});
-	}
+        tokio::spawn(async move {
+            let _ = handle_stream(stream).await;
+        });
+    }
 }
 
 async fn handle_stream(mut stream: TcpStream) -> anyhow::Result<()> {
-	let socket_ref = SockRef::from(&stream);
+    let socket_ref = SockRef::from(&stream);
 
-	socket_ref.set_nodelay(true)?;
-	socket_ref.set_quickack(true)?;
+    socket_ref.set_nodelay(true)?;
+    // socket_ref.set_quickack(true)?;
 
-	let mut ping_req = vec![0u8; 1];
-	let mut ping_res = Vec::<u8>::new();
+    let mut ping_req = vec![0u8; 1];
+    let mut ping_res = Vec::<u8>::new();
 
-	ping_res.push(b"+"[0]);
-	ping_res.extend_from_slice(&4u32.to_le_bytes());
-	ping_res.extend_from_slice(b"pong");
+    ping_res.push(b"+"[0]);
+    ping_res.extend_from_slice(&4u32.to_le_bytes());
+    ping_res.extend_from_slice(b"pong");
 
-	loop {
-		stream.read_exact(&mut ping_req).await?;
-		stream.write_all(&ping_res).await?;
-	}
+    loop {
+        stream.read_exact(&mut ping_req).await?;
+        stream.write_all(&ping_res).await?;
+    }
 }
