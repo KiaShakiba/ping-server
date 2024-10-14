@@ -88,7 +88,7 @@ async fn start_clients(port: u16, connection_count: usize, iters: u64) -> Durati
     for handle in handles {
         total_duration += handle.await.unwrap();
     }
-    total_duration
+    total_duration / connection_count as u32
 }
 
 async fn send_pings(port: u16, num_pings: u64) -> io::Result<Duration> {
