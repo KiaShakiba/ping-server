@@ -76,6 +76,7 @@ fn start_clients(port: u16, connection_count: usize, iters: u64) -> Duration {
         .into_iter()
         .map(|h| h.join().unwrap())
         .sum::<Duration>()
+        / connection_count as u32
 }
 
 fn send_pings(port: u16, num_pings: u64) -> io::Result<Duration> {
